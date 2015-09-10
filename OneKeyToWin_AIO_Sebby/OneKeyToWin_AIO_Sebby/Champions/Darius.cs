@@ -156,14 +156,21 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             foreach (var target in Program.Enemies.Where(target => Program.ValidUlt(target) && target.IsValidTarget(R.Range) ))
             {
-                var dmgR = R.GetDamage(target);
-                if (target.HasBuff("dariushemo"))
-                    dmgR += R.GetDamage(target) * target.GetBuff("dariushemo").Count * 0.2f;
-
-                if (dmgR > target.Health + target.HPRegenRate)
+                if (R.GetDamage(target) > target.Health + target.HPRegenRate)
                 {
                     R.Cast(target);
                 }
+            }
+			
+			foreach (var target in Program.Enemies.Where(target => Program.ValidUlt(target) && target.IsValidTarget(R.Range)))
+            {
+				foreach (var buff in target.Buffs.Where(buff => buff.Name == "dariushemo"))
+				{
+                if (R.GetDamage(target) + (((20 * R.Level) + (0.15 * Player.FlatPhysicalDamageMod)) * target.GetBuff("dariushemo").Count) > target.Health + target.HPRegenRate)
+                {
+                    R.Cast(target);
+                }
+				}
             }
         }
 
